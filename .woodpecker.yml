@@ -19,7 +19,7 @@ pipeline:
     image: goreleaser/goreleaser
     commands:
       - goreleaser release --config .githubrelease.yaml
-    secrets: [ gitea_token ]
+    secrets: [ github_token ]
     when:
       event: tag
 
