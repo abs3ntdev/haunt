@@ -6,8 +6,8 @@ pipeline:
       - go build -o bin/haunt
       - mkdir completions
       - ./bin/haunt completion zsh > completions/haunt_zsh
-      - ./bin/haunt completion bash > completion/haunt_bash
-      - ./bin/haunt copletion fish > completion/haunt_fish
+      - ./bin/haunt completion bash > completions/haunt_bash
+      - ./bin/haunt copletion fish > completions/haunt_fish
   publish:
     image: goreleaser/goreleaser
     commands:
