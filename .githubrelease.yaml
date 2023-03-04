@@ -1,6 +1,7 @@
 release:
-  owner: abs3ntdev
-  name: haunt
+  github:
+    owner: abs3ntdev
+    name: haunt
 
 before:
   hooks:
