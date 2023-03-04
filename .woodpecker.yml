@@ -3,4 +3,16 @@ pipeline:
     image: golang
     commands:
       - go mod tidy
-      - go build -o bin/realize
+      - go build -o bin/haunt
+      - mkdir completions
+      - ./bin/haunt completion zsh > completions/haunt_zsh
+      - ./bin/haunt completion bash > completion/haunt_bash
+      - ./bin/haunt copletion fish > completion/haunt_fish
+  publish:
+    image: goreleaser/goreleaser
+    commands:
+      - goreleaser release
+    secrets: [ gitea_token ]
+    when:
+      event: tag
+
