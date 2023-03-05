@@ -29,7 +29,7 @@ _testmain.go
 .glide
 .idea
 .DS_Store
-.haunt
+/haunt/
 
 docker
 vendor
