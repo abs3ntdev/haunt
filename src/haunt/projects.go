@@ -115,7 +115,7 @@ func (p *Project) Before() {
 	}
 
 	// setup go tools
-	p.Tools.Setup()
+	p.Tools.Setup(p)
 	// global commands before
 	p.cmd(p.stop, "before", true)
 	// indexing files and dirs
@@ -303,7 +303,10 @@ L:
 				switch event.Op {
 				case fsnotify.Chmod:
 				case fsnotify.Remove:
-					p.watcher.Remove(event.Name)
+					err := p.watcher.Remove(event.Name)
+					if err != nil {
+						log.Println(p.parent.Prefix("Failed to remove watcher: " + err.Error()))
+					}
 					if p.Validate(event.Name, false) && ext(event.Name) != "" {
 						// stop and restart
 						close(p.stop)
@@ -318,7 +321,10 @@ L:
 							continue
 						}
 						if fi.IsDir() {
-							filepath.Walk(event.Name, p.walk)
+							err := filepath.Walk(event.Name, p.walk)
+							if err != nil {
+								log.Println(p.parent.Prefix("Failed to walk directory: " + err.Error()))
+							}
 						} else {
 							// stop and restart
 							close(p.stop)
@@ -572,8 +578,14 @@ func (p *Project) run(path string, stream chan Response, stop <-chan bool) (err 
 		// https://github.com/golang/go/issues/5615
 		// https://github.com/golang/go/issues/6720
 		if build != nil {
-			build.Process.Signal(os.Interrupt)
-			build.Process.Wait()
+			err := build.Process.Signal(os.Interrupt)
+			if err != nil {
+				log.Println(p.parent.Prefix("Failed to send interrupt: " + err.Error()))
+			}
+			_, err = build.Process.Wait()
+			if err != nil {
+				log.Println(p.parent.Prefix("Error: " + err.Error()))
+			}
 		}
 	}()
 
@@ -675,7 +687,7 @@ func (r *Response) print(start time.Time, p *Project) {
 	if r.Err != nil {
 		msg = fmt.Sprintln(p.pname(p.Name, 2), ":", Red.Bold(r.Name), "\n", r.Err.Error())
 		out = BufferOut{Time: time.Now(), Text: r.Err.Error(), Type: r.Name, Stream: r.Out}
-		p.stamp("errororororororororor", out, msg, r.Out)
+		p.stamp("error", out, msg, r.Out)
 	} else {
 		msg = fmt.Sprintln(p.pname(p.Name, 5), ":", Green.Bold(r.Name), "completed in", Magenta.Regular(big.NewFloat(float64(time.Since(start).Seconds())).Text('f', 3), " s"))
 		out = BufferOut{Time: time.Now(), Text: r.Name + " in " + big.NewFloat(float64(time.Since(start).Seconds())).Text('f', 3) + " s"}
@@ -702,13 +714,19 @@ func (c *Command) exec(base string, stop <-chan bool) (response Response) {
 	ex.Stdout = &stdout
 	ex.Stderr = &stderr
 	// Start command
-	ex.Start()
+	err := ex.Start()
+	if err != nil {
+		log.Println(log.Prefix(), err.Error())
+	}
 	go func() { done <- ex.Wait() }()
 	// Wait a result
 	select {
 	case <-stop:
 		// Stop running command
-		ex.Process.Kill()
+		err := ex.Process.Kill()
+		if err != nil {
+			log.Println(log.Prefix(), err.Error())
+		}
 	case err := <-done:
 		// Command completed
 		response.Name = c.Cmd

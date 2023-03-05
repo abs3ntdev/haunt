@@ -7,6 +7,7 @@ package haunt
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"sync"
 	"time"
@@ -115,7 +116,10 @@ func (w *filePoller) Close() error {
 
 	w.closed = true
 	for name := range w.watches {
-		w.remove(name)
+		err := w.remove(name)
+		if err != nil {
+			log.Println(log.Prefix(), err.Error())
+		}
 		delete(w.watches, name)
 	}
 	w.mu.Unlock()
@@ -196,7 +200,12 @@ func (w *filePoller) Walk(path string, init bool) string {
 	if check == nil && init {
 		_, err := os.Stat(path)
 		if err == nil {
-			go w.sendEvent(fsnotify.Event{Op: fsnotify.Create, Name: path}, w.watches[path])
+			go func() {
+				err := w.sendEvent(fsnotify.Event{Op: fsnotify.Create, Name: path}, w.watches[path])
+				if err != nil {
+					log.Println(log.Prefix(), err.Error())
+				}
+			}()
 		}
 	}
 	return path
@@ -247,7 +256,10 @@ func (w *filePoller) watch(f *os.File, lastFi os.FileInfo, chClose chan struct{}
 				lastFi = nil
 			}
 			// at this point, send the error
-			w.sendErr(err, chClose)
+			err := w.sendErr(err, chClose)
+			if err != nil {
+				log.Println(log.Prefix(), err.Error())
+			}
 			return
 		case lastFi == nil:
 			if err := w.sendEvent(fsnotify.Event{Op: fsnotify.Create, Name: f.Name()}, chClose); err != nil {

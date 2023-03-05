@@ -39,7 +39,7 @@ type Tools struct {
 }
 
 // Setup go tools
-func (t *Tools) Setup() {
+func (t *Tools) Setup(p *Project) {
 	gocmd := "go"
 
 	// go clean
@@ -48,6 +48,8 @@ func (t *Tools) Setup() {
 		t.Clean.isTool = true
 		t.Clean.cmd = replace([]string{gocmd, "clean"}, t.Clean.Method)
 		t.Clean.Args = split([]string{}, t.Clean.Args)
+		msg = fmt.Sprintln(p.pname(p.Name, 1), ":", Magenta.Bold(t.Clean.name), "running. Method:", Blue.Bold(strings.Join(t.Clean.cmd, " "), " ", strings.Join(t.Clean.Args, " ")))
+		log.Print(msg)
 	}
 	// go generate
 	if t.Generate.Status {
@@ -56,6 +58,8 @@ func (t *Tools) Setup() {
 		t.Generate.name = "Generate"
 		t.Generate.cmd = replace([]string{gocmd, "generate"}, t.Generate.Method)
 		t.Generate.Args = split([]string{}, t.Generate.Args)
+		msg = fmt.Sprintln(p.pname(p.Name, 1), ":", Magenta.Bold(t.Generate.name), "running. Method:", Blue.Bold(strings.Join(t.Generate.cmd, " "), " ", strings.Join(t.Generate.Args, " ")))
+		log.Print(msg)
 	}
 	// go fmt
 	if t.Fmt.Status {
@@ -66,6 +70,8 @@ func (t *Tools) Setup() {
 		t.Fmt.isTool = true
 		t.Fmt.cmd = replace([]string{"gofmt"}, t.Fmt.Method)
 		t.Fmt.Args = split([]string{}, t.Fmt.Args)
+		msg = fmt.Sprintln(p.pname(p.Name, 1), ":", Magenta.Bold(t.Fmt.name), "running. Method:", Blue.Bold(strings.Join(t.Fmt.cmd, " "), " ", strings.Join(t.Fmt.Args, " ")))
+		log.Print(msg)
 	}
 	// go vet
 	if t.Vet.Status {
@@ -74,6 +80,8 @@ func (t *Tools) Setup() {
 		t.Vet.isTool = true
 		t.Vet.cmd = replace([]string{gocmd, "vet"}, t.Vet.Method)
 		t.Vet.Args = split([]string{}, t.Vet.Args)
+		msg = fmt.Sprintln(p.pname(p.Name, 1), ":", Magenta.Bold(t.Vet.name), "running. Method:", Blue.Bold(strings.Join(t.Vet.cmd, " "), " ", strings.Join(t.Vet.Args, " ")))
+		log.Print(msg)
 	}
 	// go test
 	if t.Test.Status {
@@ -82,6 +90,9 @@ func (t *Tools) Setup() {
 		t.Test.name = "Test"
 		t.Test.cmd = replace([]string{gocmd, "test"}, t.Test.Method)
 		t.Test.Args = split([]string{}, t.Test.Args)
+		p.parent.Prefix(t.Test.name + ": Running")
+		msg = fmt.Sprintln(p.pname(p.Name, 1), ":", Magenta.Bold(t.Test.name), "running. Method:", Blue.Bold(strings.Join(t.Test.cmd, " "), " ", strings.Join(t.Test.Args, " ")))
+		log.Print(msg)
 	}
 	// go install
 	t.Install.name = "Install"
@@ -136,6 +147,7 @@ func (t *Tool) Exec(path string, stop <-chan bool) (response Response) {
 		}
 		cmd.Stdout = &out
 		cmd.Stderr = &stderr
+
 		// Start command
 		err := cmd.Start()
 		if err != nil {
@@ -148,7 +160,9 @@ func (t *Tool) Exec(path string, stop <-chan bool) (response Response) {
 		select {
 		case <-stop:
 			// Stop running command
-			cmd.Process.Kill()
+			if err := cmd.Process.Kill(); err != nil {
+				response.Err = err
+			}
 		case err := <-done:
 			// Command completed
 			response.Name = t.name
@@ -181,11 +195,14 @@ func (t *Tool) Compile(path string, stop <-chan bool) (response Response) {
 	// Start command
 	err := cmd.Start()
 	if err != nil {
-		err := cmd.Process.Kill()
-		if err != nil {
-			fmt.Println(err.Error())
-			return
+		log.Println(log.Prefix(), err.Error())
+		if cmd.Process != nil {
+			err := cmd.Process.Kill()
+			if err != nil {
+				log.Println(log.Prefix(), err.Error())
+			}
 		}
+		os.Exit(0)
 	}
 	go func() {
 		done <- cmd.Wait()

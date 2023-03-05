@@ -1,7 +1,6 @@
 package haunt
 
 import (
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -89,7 +88,7 @@ func (s *Settings) Write(out interface{}) error {
 	if err != nil {
 		return err
 	}
-	s.Fatal(ioutil.WriteFile(RFile, y, Permission))
+	s.Fatal(os.WriteFile(RFile, y, Permission))
 	return nil
 }
 
@@ -99,7 +98,7 @@ func (s Settings) Stream(file string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	content, err := ioutil.ReadFile(file)
+	content, err := os.ReadFile(file)
 	s.Fatal(err)
 	return content, err
 }

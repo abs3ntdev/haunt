@@ -57,7 +57,9 @@ func (s *Server) projects(c echo.Context) (err error) {
 			} else {
 				err := json.Unmarshal([]byte(text), &s.Parent)
 				if err == nil {
-					s.Parent.Settings.Write(s.Parent)
+					if err := s.Parent.Settings.Write(s.Parent); err != nil {
+						log.Println(s.Parent.Prefix("Failed to write: " + err.Error()))
+					}
 					break
 				}
 			}
@@ -88,7 +90,10 @@ func (s *Server) render(c echo.Context, path string, mime int) error {
 		rs.Header().Set(echo.HeaderContentType, "image/png")
 	}
 	rs.WriteHeader(http.StatusOK)
-	rs.Write(data)
+	_, err = rs.Write(data)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -151,8 +156,11 @@ func (s *Server) Start() (err error) {
 		e.HideBanner = true
 		e.Debug = false
 		go func() {
+			err := e.Start(string(s.Host) + ":" + strconv.Itoa(s.Port))
+			if err != nil {
+				log.Println(s.Parent.Prefix("Failed to start on " + s.Host + ":" + strconv.Itoa(s.Port)))
+			}
 			log.Println(s.Parent.Prefix("Started on " + string(s.Host) + ":" + strconv.Itoa(s.Port)))
-			e.Start(string(s.Host) + ":" + strconv.Itoa(s.Port))
 		}()
 	}
 	return nil
