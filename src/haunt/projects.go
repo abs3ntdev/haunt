@@ -265,7 +265,6 @@ func (p *Project) Reload(path string, stop <-chan bool) {
 		if build.Err != nil {
 			log.Println(p.parent.Prefix("Build failed for: " + p.Name + " exiting"))
 		}
-		os.Exit(0)
 	}
 	if done {
 		return
