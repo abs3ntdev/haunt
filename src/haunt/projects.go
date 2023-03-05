@@ -260,10 +260,10 @@ func (p *Project) Reload(path string, stop <-chan bool) {
 		}()
 	} else {
 		if install.Err != nil {
-			log.Println(p.parent.Prefix("Install failed for: " + p.Name + " exiting"))
+			log.Println(p.parent.Prefix("Install failed for: " + p.Name))
 		}
 		if build.Err != nil {
-			log.Println(p.parent.Prefix("Build failed for: " + p.Name + " exiting"))
+			log.Println(p.parent.Prefix("Build failed for: " + p.Name))
 		}
 	}
 	if done {

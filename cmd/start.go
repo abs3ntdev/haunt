@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/abs3ntdev/haunt/src/config"
 	"github.com/abs3ntdev/haunt/src/haunt"
 	"github.com/spf13/cobra"
@@ -11,13 +14,16 @@ var startConfig config.Flags
 var startCmd = &cobra.Command{
 	Use:   "start",
 	Short: "Start haunt on a given path, generates a config file if one does not already exist",
-	RunE:  start,
+	Args:  cobra.MatchAll(cobra.MaximumNArgs(1), cobra.OnlyValidArgs),
+	ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return getProjectNamesToStart(toComplete), cobra.ShellCompDirectiveNoFileComp
+	},
+	RunE: start,
 }
 
 func init() {
 	rootCmd.AddCommand(startCmd)
 	startCmd.Flags().StringVarP(&startConfig.Path, "path", "p", "", "Project base path")
-	startCmd.Flags().StringVarP(&startConfig.Name, "name", "n", "", "Run a project by its name")
 	startCmd.Flags().BoolVarP(&startConfig.Format, "fmt", "f", false, "Enable go fmt")
 	startCmd.Flags().BoolVarP(&startConfig.Vet, "vet", "v", false, "Enable go vet")
 	startCmd.Flags().BoolVarP(&startConfig.Test, "test", "t", false, "Enable go test")
@@ -31,8 +37,24 @@ func init() {
 	startCmd.Flags().BoolVarP(&startConfig.NoConfig, "no-config", "c", false, "Ignore existing config and doesn't create a new one")
 }
 
+func getProjectNamesToStart(input string) []string {
+	r := haunt.NewHaunt()
+	// read a config if exist
+	err := r.Settings.Read(&r)
+	if err != nil {
+		return []string{}
+	}
+	names := []string{}
+	for _, project := range r.Projects {
+		if strings.HasPrefix(project.Name, input) {
+			names = append(names, project.Name)
+		}
+	}
+	return names
+}
+
 // Start haunt workflow
-func start(cmd *cobra.Command, args []string) (err error) {
+func start(_ *cobra.Command, args []string) (err error) {
 	r := haunt.NewHaunt()
 	// set legacy watcher
 	if startConfig.Legacy {
@@ -46,13 +68,18 @@ func start(cmd *cobra.Command, args []string) (err error) {
 	// check no-config and read
 	if !startConfig.NoConfig {
 		// read a config if exist
-		err := r.Settings.Read(&r)
+		err = r.Settings.Read(&r)
 		if err != nil {
 			return err
 		}
-		if startConfig.Name != "" {
+		if len(args) >= 1 && args[0] != "" {
+			name := args[0]
 			// filter by name flag if exist
-			r.Schema.Projects = r.Schema.Filter("Name", startConfig.Name)
+			r.Projects = r.Filter("Name", name)
+			if len(r.Projects) == 0 {
+				fmt.Println("Project not found, exiting")
+				return
+			}
 		}
 		// increase file limit
 		if r.Settings.FileLimit != 0 {
@@ -63,11 +90,11 @@ func start(cmd *cobra.Command, args []string) (err error) {
 
 	}
 	// check project list length
-	if len(r.Schema.Projects) == 0 {
+	if len(r.Projects) == 0 {
 		// create a new project based on given params
-		project := r.Schema.New(startConfig)
+		project := r.New(startConfig)
 		// Add to projects list
-		r.Schema.Add(project)
+		r.Add(project)
 		// save config
 		if !startConfig.NoConfig {
 			err = r.Settings.Write(r)
