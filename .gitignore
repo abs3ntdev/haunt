@@ -29,9 +29,8 @@ _testmain.go
 .glide
 .idea
 .DS_Store
-.realize
+haunt
 
-realize/assets/*
 docker
 vendor
 bin
