@@ -1,7 +1,7 @@
-gitea_urls:
-  api: https://gitea.asdf.cafe/api/v1
-  download: https://gitea.asdf.cafe
-  skip_tls_verify: false
+release:
+  github:
+    owner: abs3ntdev
+    name: haunt
 
 before:
   hooks:
