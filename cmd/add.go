@@ -60,7 +60,7 @@ func getPotentialProjets(in string) []string {
 
 func init() {
 	rootCmd.AddCommand(addCmd)
-	addCmd.Flags().StringVarP(&addConfig.Path, "path", "p", "", "Project base path")
+	addCmd.Flags().StringVarP(&addConfig.Path, "path", "p", "./", "Project base path")
 	addCmd.Flags().BoolVarP(&addConfig.Format, "fmt", "f", false, "Enable go fmt")
 	addCmd.Flags().BoolVarP(&addConfig.Vet, "vet", "v", false, "Enable go vet")
 	addCmd.Flags().BoolVarP(&addConfig.Test, "test", "t", false, "Enable go test")
@@ -79,13 +79,10 @@ func add(cmd *cobra.Command, args []string) (err error) {
 	if err != nil {
 		return err
 	}
-	if addConfig.Path == "" {
-		addConfig.Path = "cmd/" + addConfig.Name
-	}
-	projects := len(r.Schema.Projects)
+	projects := len(r.Projects)
 	// create and add a new project
-	r.Schema.Add(r.Schema.New(addConfig))
-	if len(r.Schema.Projects) > projects {
+	r.Add(r.New(addConfig))
+	if len(r.Projects) > projects {
 		// update config
 		err = r.Settings.Write(r)
 		if err != nil {

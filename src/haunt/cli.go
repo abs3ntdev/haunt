@@ -99,7 +99,7 @@ func (r *Haunt) SetDefaults() {
 			},
 			Watcher: Watch{
 				Exts:  []string{"go"},
-				Paths: []string{"."},
+				Paths: []string{"./"},
 			},
 		})
 	} else {

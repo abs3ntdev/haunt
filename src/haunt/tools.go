@@ -202,7 +202,6 @@ func (t *Tool) Compile(path string, stop <-chan bool) (response Response) {
 				log.Println(log.Prefix(), err.Error())
 			}
 		}
-		os.Exit(0)
 	}
 	go func() {
 		done <- cmd.Wait()

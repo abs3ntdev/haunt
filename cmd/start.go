@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"fmt"
+	"log"
 	"strings"
 
 	"github.com/abs3ntdev/haunt/src/config"
@@ -23,7 +23,7 @@ var startCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(startCmd)
-	startCmd.Flags().StringVarP(&startConfig.Path, "path", "p", "", "Project base path")
+	startCmd.Flags().StringVarP(&startConfig.Path, "path", "p", "./", "Project base path")
 	startCmd.Flags().BoolVarP(&startConfig.Format, "fmt", "f", false, "Enable go fmt")
 	startCmd.Flags().BoolVarP(&startConfig.Vet, "vet", "v", false, "Enable go vet")
 	startCmd.Flags().BoolVarP(&startConfig.Test, "test", "t", false, "Enable go test")
@@ -54,7 +54,7 @@ func getProjectNamesToStart(input string) []string {
 }
 
 // Start haunt workflow
-func start(_ *cobra.Command, args []string) (err error) {
+func start(cmd *cobra.Command, args []string) (err error) {
 	r := haunt.NewHaunt()
 	// set legacy watcher
 	if startConfig.Legacy {
@@ -76,9 +76,10 @@ func start(_ *cobra.Command, args []string) (err error) {
 			// filter by name flag if exist
 			r.Projects = r.Filter(args)
 			if len(r.Projects) == 0 {
-				fmt.Println("Project not found, exiting")
+				log.Println(r.Prefix("Project not found, exiting"))
 				return
 			}
+			startConfig.Name = args[0]
 		}
 		// increase file limit
 		if r.Settings.FileLimit != 0 {

@@ -2,6 +2,7 @@ package haunt
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 
 	"github.com/abs3ntdev/haunt/src/config"
@@ -35,6 +36,10 @@ func (s *Schema) Remove(name string) error {
 
 // New create a project using cli fields
 func (s *Schema) New(flags config.Flags) Project {
+	if flags.Name == "" {
+		flags.Name = Wdir()
+	}
+	fmt.Println(flags.Name)
 	project := Project{
 		Name: flags.Name,
 		Path: flags.Path,
@@ -62,7 +67,7 @@ func (s *Schema) New(flags config.Flags) Project {
 			},
 		},
 		Watcher: Watch{
-			Paths:  []string{"/"},
+			Paths:  []string{"./"},
 			Ignore: []string{".git", ".haunt", "vendor"},
 			Exts:   []string{"go"},
 		},

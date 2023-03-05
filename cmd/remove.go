@@ -30,7 +30,7 @@ func getProjectNames(input string) []string {
 		return []string{}
 	}
 	names := []string{}
-	for _, project := range r.Schema.Projects {
+	for _, project := range r.Projects {
 		if strings.HasPrefix(project.Name, input) {
 			names = append(names, project.Name)
 		}
@@ -47,7 +47,7 @@ func remove(cmd *cobra.Command, args []string) (err error) {
 		return err
 	}
 	for _, arg := range args {
-		err := r.Schema.Remove(arg)
+		err := r.Remove(arg)
 		if err != nil {
 			log.Println(r.Prefix(haunt.Red.Bold(arg + " project not found")))
 			continue

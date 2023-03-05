@@ -116,8 +116,10 @@ func (p *Project) Before() {
 
 	// setup go tools
 	p.Tools.Setup(p)
+
 	// global commands before
 	p.cmd(p.stop, "before", true)
+
 	// indexing files and dirs
 	for _, dir := range p.Watcher.Paths {
 		base, _ := filepath.Abs(dir)
@@ -127,6 +129,7 @@ func (p *Project) Before() {
 			}
 		}
 	}
+
 	// start message
 	msg = fmt.Sprintln(p.pname(p.Name, 1), ":", Blue.Bold("Watching"), Magenta.Bold(p.files), "file/s", Magenta.Bold(p.folders), "folder/s")
 	out = BufferOut{Time: time.Now(), Text: "Watching " + strconv.FormatInt(p.files, 10) + " files/s " + strconv.FormatInt(p.folders, 10) + " folder/s"}
@@ -139,6 +142,7 @@ func (p *Project) Err(err error) {
 		p.parent.Err(Context{Project: p})
 		return
 	}
+
 	if err != nil {
 		msg = fmt.Sprintln(p.pname(p.Name, 2), ":", Red.Regular(err.Error()))
 		out = BufferOut{Time: time.Now(), Text: err.Error()}
@@ -169,6 +173,7 @@ func (p *Project) Reload(path string, stop <-chan bool) {
 		p.parent.Reload(Context{Project: p, Watcher: p.watcher, Path: path, Stop: stop})
 		return
 	}
+
 	var done bool
 	var install, build Response
 	go func() {
@@ -178,14 +183,17 @@ func (p *Project) Reload(path string, stop <-chan bool) {
 			return
 		}
 	}()
+
 	if done {
 		return
 	}
+
 	// before command
 	p.cmd(stop, "before", false)
 	if done {
 		return
 	}
+
 	// Go supported tools
 	if len(path) > 0 {
 		fi, err := os.Stat(path)
@@ -197,6 +205,7 @@ func (p *Project) Reload(path string, stop <-chan bool) {
 		}
 		p.tools(stop, path, fi)
 	}
+
 	// Prevent fake events on polling startup
 	p.init = true
 	// prevent errors using haunt without config with only run flag
@@ -277,19 +286,24 @@ func (p *Project) Watch(wg *sync.WaitGroup) {
 	var err error
 	// change channel
 	p.stop = make(chan bool)
+
 	// init a new watcher
 	p.watcher, err = NewFileWatcher(p.parent.Settings.Legacy)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer func() {
 		close(p.stop)
 		p.watcher.Close()
 	}()
+
 	// before start checks
 	p.Before()
+
 	// start watcher
 	go p.Reload("", p.stop)
+
 L:
 	for {
 		select {
