@@ -19,7 +19,7 @@ var (
 	// RPrefix tool name
 	RPrefix = "haunt"
 	// RVersion current version
-	RVersion = "3.0.0"
+	RVersion = "v0.1.0"
 	// RExt file extension
 	RExt = ".yaml"
 	// RFile config file name
