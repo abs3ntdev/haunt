@@ -120,8 +120,7 @@ func (p *Project) Before() {
 	p.cmd(p.stop, "before", true)
 	// indexing files and dirs
 	for _, dir := range p.Watcher.Paths {
-		base, _ := filepath.Abs(p.Path)
-		base = filepath.Join(base, dir)
+		base, _ := filepath.Abs(dir)
 		if _, err := os.Stat(base); err == nil {
 			if err := filepath.Walk(base, p.walk); err != nil {
 				p.Err(err)
