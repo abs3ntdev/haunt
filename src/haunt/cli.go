@@ -18,8 +18,6 @@ import (
 var (
 	// RPrefix tool name
 	RPrefix = "haunt"
-	// RVersion current version
-	RVersion = "v0.1.3"
 	// RExt file extension
 	RExt = ".yaml"
 	// RFile config file name

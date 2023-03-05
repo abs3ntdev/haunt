@@ -4,10 +4,9 @@ pipeline:
     commands:
       - go mod tidy
       - go build -o bin/haunt
-      - mkdir completions
-      - ./bin/haunt completion zsh > completions/haunt_zsh
-      - ./bin/haunt completion bash > completions/haunt_bash
-      - ./bin/haunt completion fish > completions/haunt_fish
+    when:
+      event: push
+
   publish:
     image: goreleaser/goreleaser
     commands:

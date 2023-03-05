@@ -7,6 +7,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var Version = "dev"
+
 // versionCmd represents the version command
 var versionCmd = &cobra.Command{
 	Use:   "version",
@@ -37,5 +39,5 @@ func init() {
 // Version print current version
 func version(cmd *cobra.Command, args []string) {
 	r := haunt.NewHaunt()
-	log.Println(r.Prefix(haunt.Green.Bold(haunt.RVersion)))
+	log.Println(r.Prefix(haunt.Green.Bold(Version)))
 }
