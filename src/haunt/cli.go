@@ -86,11 +86,14 @@ func (r *Haunt) SetDefaults() {
 	r.Settings.Files.Errors = Resource{Name: FileLog, Status: false}
 	if _, err := os.Stat("main.go"); err == nil {
 		log.Println(r.Prefix(Green.Bold("Adding: " + filepath.Base(Wdir()))))
-		r.Schema.Projects = append(r.Schema.Projects, Project{
+		r.Projects = append(r.Projects, Project{
 			Name: filepath.Base(Wdir()),
 			Path: Wdir(),
 			Tools: Tools{
 				Install: Tool{
+					Status: true,
+				},
+				Build: Tool{
 					Status: true,
 				},
 				Run: Tool{
@@ -113,11 +116,14 @@ func (r *Haunt) SetDefaults() {
 	for _, dir := range subDirs {
 		if dir.IsDir() {
 			log.Println(r.Prefix(Green.Bold("Adding: " + dir.Name())))
-			r.Schema.Projects = append(r.Schema.Projects, Project{
+			r.Projects = append(r.Projects, Project{
 				Name: dir.Name(),
 				Path: "cmd/" + dir.Name(),
 				Tools: Tools{
 					Install: Tool{
+						Status: true,
+					},
+					Build: Tool{
 						Status: true,
 					},
 					Run: Tool{
@@ -147,10 +153,10 @@ func (r *Haunt) Stop() error {
 
 // Start haunt workflow
 func (r *Haunt) Start() error {
-	if len(r.Schema.Projects) > 0 {
+	if len(r.Projects) > 0 {
 		var wg sync.WaitGroup
-		wg.Add(len(r.Schema.Projects))
-		for k := range r.Schema.Projects {
+		wg.Add(len(r.Projects))
+		for k := range r.Projects {
 			r.Schema.Projects[k].exit = make(chan os.Signal, 1)
 			signal.Notify(r.Schema.Projects[k].exit, os.Interrupt)
 			r.Schema.Projects[k].parent = r
