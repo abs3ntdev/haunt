@@ -70,16 +70,13 @@ func (s *Schema) New(flags config.Flags) Project {
 	return project
 }
 
-// Filter project list by field
-func (s *Schema) Filter(field string, value interface{}) []Project {
+// Filter project list by names
+func (s *Schema) Filter(names []string) []Project {
 	result := []Project{}
 	for _, item := range s.Projects {
-		v := reflect.ValueOf(item)
-		for i := 0; i < v.NumField(); i++ {
-			if v.Type().Field(i).Name == field {
-				if reflect.DeepEqual(v.Field(i).Interface(), value) {
-					result = append(result, item)
-				}
+		for _, name := range names {
+			if item.Name == name {
+				result = append(result, item)
 			}
 		}
 	}

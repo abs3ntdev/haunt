@@ -14,7 +14,7 @@ var startConfig config.Flags
 var startCmd = &cobra.Command{
 	Use:   "start",
 	Short: "Start haunt on a given path, generates a config file if one does not already exist",
-	Args:  cobra.MatchAll(cobra.MaximumNArgs(1), cobra.OnlyValidArgs),
+	Args:  cobra.MatchAll(cobra.OnlyValidArgs),
 	ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return getProjectNamesToStart(toComplete), cobra.ShellCompDirectiveNoFileComp
 	},
@@ -72,10 +72,9 @@ func start(_ *cobra.Command, args []string) (err error) {
 		if err != nil {
 			return err
 		}
-		if len(args) >= 1 && args[0] != "" {
-			name := args[0]
+		if len(args) >= 1 {
 			// filter by name flag if exist
-			r.Projects = r.Filter("Name", name)
+			r.Projects = r.Filter(args)
 			if len(r.Projects) == 0 {
 				fmt.Println("Project not found, exiting")
 				return
