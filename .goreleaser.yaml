@@ -3,6 +3,11 @@ gitea_urls:
   download: https://gitea.asdf.cafe
   skip_tls_verify: false
 
+release:
+  github:
+    owner: abs3ntdev
+    name: haunt
+
 before:
   hooks:
     - go mod tidy

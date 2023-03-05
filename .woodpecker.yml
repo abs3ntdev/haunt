@@ -15,11 +15,4 @@ pipeline:
     secrets: [ gitea_token ]
     when:
       event: tag
-  publish-github:
-    image: goreleaser/goreleaser
-    commands:
-      - goreleaser release --config .githubrelease.yaml --clean
-    secrets: [ github_token ]
-    when:
-      event: tag
 
