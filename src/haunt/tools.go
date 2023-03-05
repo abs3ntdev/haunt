@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
@@ -86,7 +86,6 @@ func (t *Tools) Setup() {
 	// go install
 	t.Install.name = "Install"
 	t.Install.cmd = replace([]string{gocmd, "install"}, t.Install.Method)
-	fmt.Println(t.Install.cmd)
 	t.Install.Args = split([]string{}, t.Install.Args)
 	// go build
 	if t.Build.Status {
@@ -104,7 +103,7 @@ func (t *Tool) Exec(path string, stop <-chan bool) (response Response) {
 		}
 		// check if there is at least one go file
 		matched := false
-		files, _ := ioutil.ReadDir(path)
+		files, _ := os.ReadDir(path)
 		for _, f := range files {
 			matched, _ = filepath.Match("*.go", f.Name())
 			if matched {
@@ -180,14 +179,27 @@ func (t *Tool) Compile(path string, stop <-chan bool) (response Response) {
 	cmd.Stdout = &out
 	cmd.Stderr = &stderr
 	// Start command
-	cmd.Start()
-	go func() { done <- cmd.Wait() }()
+	err := cmd.Start()
+	if err != nil {
+		err := cmd.Process.Kill()
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+	}
+	go func() {
+		done <- cmd.Wait()
+	}()
 	// Wait a result
 	response.Name = t.name
 	select {
 	case <-stop:
 		// Stop running command
-		cmd.Process.Kill()
+		err := cmd.Process.Kill()
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
 	case err := <-done:
 		// Command completed
 		if err != nil {

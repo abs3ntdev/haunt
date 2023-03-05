@@ -258,6 +258,14 @@ func (p *Project) Reload(path string, stop <-chan bool) {
 				p.stamp("error", out, msg, "")
 			}
 		}()
+	} else {
+		if install.Err != nil {
+			log.Println(p.parent.Prefix("Install failed for: " + p.Name + " exiting"))
+		}
+		if build.Err != nil {
+			log.Println(p.parent.Prefix("Build failed for: " + p.Name + " exiting"))
+		}
+		os.Exit(0)
 	}
 	if done {
 		return
@@ -667,7 +675,7 @@ func (r *Response) print(start time.Time, p *Project) {
 	if r.Err != nil {
 		msg = fmt.Sprintln(p.pname(p.Name, 2), ":", Red.Bold(r.Name), "\n", r.Err.Error())
 		out = BufferOut{Time: time.Now(), Text: r.Err.Error(), Type: r.Name, Stream: r.Out}
-		p.stamp("error", out, msg, r.Out)
+		p.stamp("errororororororororor", out, msg, r.Out)
 	} else {
 		msg = fmt.Sprintln(p.pname(p.Name, 5), ":", Green.Bold(r.Name), "completed in", Magenta.Regular(big.NewFloat(float64(time.Since(start).Seconds())).Text('f', 3), " s"))
 		out = BufferOut{Time: time.Now(), Text: r.Name + " in " + big.NewFloat(float64(time.Since(start).Seconds())).Text('f', 3) + " s"}
