@@ -17,6 +17,10 @@ builds:
     ignore:
       - goos: windows
         goarch: "386"
+    # Custom ldflags templates.
+    # Default is `-s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser`.
+    ldflags:
+      - -s -w -X github.com/abs3ntdev/haunt/cmd.Version={{.Version}}
 
 archives:
   - format: tar.gz
