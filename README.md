@@ -116,7 +116,7 @@ Remove a project by its name
       args:                     // arguments to pass at the project
       - --myarg
       watcher:
-          paths:                 // watched paths
+          paths:                 // watched paths are relative to directory you run haunt in
           - /
           ignore_paths:          // ignored paths
           - vendor
