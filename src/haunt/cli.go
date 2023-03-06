@@ -16,14 +16,14 @@ import (
 )
 
 var (
-	// RPrefix tool name
-	RPrefix = "haunt"
-	// RExt file extension
-	RExt = ".yaml"
-	// RFile config file name
-	RFile = "." + RPrefix + RExt
-	// RExtWin windows extension
-	RExtWin = ".exe"
+	// HPrefix tool name
+	HPrefix = "haunt"
+	// HExt file extension
+	HExt = ".yaml"
+	// HFile config file name
+	HFile = "." + HPrefix + HExt
+	// HExtWin windows extension
+	HExtWin = ".exe"
 )
 
 type (
@@ -76,17 +76,17 @@ func init() {
 	}
 }
 
-func (r *Haunt) SetDefaults() {
-	r.Server = Server{Parent: r, Status: true, Open: false, Port: Port}
-	r.Settings.FileLimit = 0
-	r.Settings.Legacy.Interval = 100 * time.Millisecond
-	r.Settings.Legacy.Force = false
-	r.Settings.Errors = Resource{Name: FileErr, Status: false}
-	r.Settings.Errors = Resource{Name: FileOut, Status: false}
-	r.Settings.Errors = Resource{Name: FileLog, Status: false}
+func (h *Haunt) SetDefaults() {
+	h.Server = Server{Parent: h, Status: true, Open: false, Port: Port}
+	h.Settings.FileLimit = 0
+	h.Settings.Legacy.Interval = 100 * time.Millisecond
+	h.Settings.Legacy.Force = false
+	h.Settings.Errors = Resource{Name: FileErr, Status: false}
+	h.Settings.Errors = Resource{Name: FileOut, Status: false}
+	h.Settings.Errors = Resource{Name: FileLog, Status: false}
 	if _, err := os.Stat("main.go"); err == nil {
-		log.Println(r.Prefix(Green.Bold("Adding: " + filepath.Base(Wdir()))))
-		r.Projects = append(r.Projects, Project{
+		log.Println(h.Prefix(Green.Bold("Adding: " + filepath.Base(Wdir()))))
+		h.Projects = append(h.Projects, Project{
 			Name: filepath.Base(Wdir()),
 			Path: Wdir(),
 			Tools: Tools{
@@ -103,17 +103,17 @@ func (r *Haunt) SetDefaults() {
 			},
 		})
 	} else {
-		log.Println(r.Prefix(Magenta.Bold("Skipping: " + filepath.Base(Wdir()) + " no main.go file in root")))
+		log.Println(h.Prefix(Magenta.Bold("Skipping: " + filepath.Base(Wdir()) + " no main.go file in root")))
 	}
 	subDirs, err := os.ReadDir("cmd")
 	if err != nil {
-		log.Println(r.Prefix("cmd directory not found, skipping"))
+		log.Println(h.Prefix("cmd directory not found, skipping"))
 		return
 	}
 	for _, dir := range subDirs {
 		if dir.IsDir() {
-			log.Println(r.Prefix(Green.Bold("Adding: " + dir.Name())))
-			r.Projects = append(r.Projects, Project{
+			log.Println(h.Prefix(Green.Bold("Adding: " + dir.Name())))
+			h.Projects = append(h.Projects, Project{
 				Name: dir.Name(),
 				Path: "cmd/" + dir.Name(),
 				Tools: Tools{
@@ -130,31 +130,31 @@ func (r *Haunt) SetDefaults() {
 				},
 			})
 		} else {
-			log.Println(r.Prefix(Magenta.Bold("Skipping: " + dir.Name() + " not a directory")))
+			log.Println(h.Prefix(Magenta.Bold("Skipping: " + dir.Name() + " not a directory")))
 		}
 	}
 }
 
 // Stop haunt workflow
-func (r *Haunt) Stop() error {
-	for k := range r.Projects {
-		if r.Schema.Projects[k].exit != nil {
-			close(r.Schema.Projects[k].exit)
+func (h *Haunt) Stop() error {
+	for k := range h.Projects {
+		if h.Schema.Projects[k].exit != nil {
+			close(h.Schema.Projects[k].exit)
 		}
 	}
 	return nil
 }
 
 // Run haunt workflow
-func (r *Haunt) Run() error {
-	if len(r.Projects) > 0 {
+func (h *Haunt) Run() error {
+	if len(h.Projects) > 0 {
 		var wg sync.WaitGroup
-		wg.Add(len(r.Projects))
-		for k := range r.Projects {
-			r.Schema.Projects[k].exit = make(chan os.Signal, 1)
-			signal.Notify(r.Schema.Projects[k].exit, os.Interrupt)
-			r.Schema.Projects[k].parent = r
-			go r.Schema.Projects[k].Watch(&wg)
+		wg.Add(len(h.Projects))
+		for k := range h.Projects {
+			h.Schema.Projects[k].exit = make(chan os.Signal, 1)
+			signal.Notify(h.Schema.Projects[k].exit, os.Interrupt)
+			h.Schema.Projects[k].parent = h
+			go h.Schema.Projects[k].Watch(&wg)
 		}
 		wg.Wait()
 	} else {
@@ -164,9 +164,9 @@ func (r *Haunt) Run() error {
 }
 
 // Prefix a given string with tool name
-func (r *Haunt) Prefix(input string) string {
+func (h *Haunt) Prefix(input string) string {
 	if len(input) > 0 {
-		return fmt.Sprint(Yellow.Bold("["), strings.ToUpper(RPrefix), Yellow.Bold("]"), ": ", input)
+		return fmt.Sprint(Yellow.Bold("["), strings.ToUpper(HPrefix), Yellow.Bold("]"), ": ", input)
 	}
 	return input
 }

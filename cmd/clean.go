@@ -20,10 +20,10 @@ func init() {
 
 // Clean remove haunt file
 func clean(cmd *cobra.Command, args []string) (err error) {
-	r := haunt.NewHaunt()
-	if err := r.Settings.Remove(haunt.RFile); err != nil {
+	h := haunt.NewHaunt()
+	if err := h.Settings.Remove(haunt.HFile); err != nil {
 		return err
 	}
-	log.Println(r.Prefix(haunt.Green.Bold("config file removed successfully removed")))
+	log.Println(h.Prefix(haunt.Green.Bold("config file removed successfully removed")))
 	return nil
 }

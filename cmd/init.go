@@ -23,10 +23,10 @@ func init() {
 }
 
 func defaultConfig(cmd *cobra.Command, args []string) error {
-	r := haunt.NewHaunt()
+	h := haunt.NewHaunt()
 	write := true
-	if _, err := os.Stat(haunt.RFile); err == nil {
-		fmt.Print(r.Prefix("Config file exists. Overwire? " + haunt.Magenta.Bold("[y/n] ") + haunt.Green.Bold("(n) ")))
+	if _, err := os.Stat(haunt.HFile); err == nil {
+		fmt.Print(h.Prefix("Config file exists. Overwire? " + haunt.Magenta.Bold("[y/n] ") + haunt.Green.Bold("(n) ")))
 		var overwrite string
 		fmt.Scanf("%s", &overwrite)
 		write = false
@@ -36,15 +36,15 @@ func defaultConfig(cmd *cobra.Command, args []string) error {
 		}
 	}
 	if write {
-		r.SetDefaults()
-		err := r.Settings.Write(r)
+		h.SetDefaults()
+		err := h.Settings.Write(h)
 		if err != nil {
 			return err
 		}
-		log.Println(r.Prefix(
+		log.Println(h.Prefix(
 			"Config file has successfully been saved at .haunt.yaml",
 		))
-		log.Println(r.Prefix(
+		log.Println(h.Prefix(
 			"Run haunt add --help to see how to add more projects",
 		))
 		return nil

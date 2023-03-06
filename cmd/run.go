@@ -23,14 +23,14 @@ func init() {
 }
 
 func getProjectNamesToRun(input string) []string {
-	r := haunt.NewHaunt()
+	h := haunt.NewHaunt()
 	// read a config if exist
-	err := r.Settings.Read(&r)
+	err := h.Settings.Read(&h)
 	if err != nil {
 		return []string{}
 	}
 	names := []string{}
-	for _, project := range r.Projects {
+	for _, project := range h.Projects {
 		if strings.HasPrefix(project.Name, input) {
 			names = append(names, project.Name)
 		}
@@ -40,41 +40,41 @@ func getProjectNamesToRun(input string) []string {
 
 // haunt workflow
 func run(cmd *cobra.Command, args []string) (err error) {
-	r := haunt.NewHaunt()
+	h := haunt.NewHaunt()
 
 	// read a config if exist
-	err = r.Settings.Read(&r)
+	err = h.Settings.Read(&h)
 	if err != nil {
 		return err
 	}
 	if len(args) >= 1 {
 		// filter by name flag if exist
-		r.Projects = r.Filter(args)
-		if len(r.Projects) == 0 {
-			log.Println(r.Prefix("No valid project found, exiting. Check your config file or run haunt add"))
+		h.Projects = h.Filter(args)
+		if len(h.Projects) == 0 {
+			log.Println(h.Prefix("No valid project found, exiting. Check your config file or run haunt add"))
 			return
 		}
 	}
 	// increase file limit
-	if r.Settings.FileLimit != 0 {
-		if err = r.Settings.Flimit(); err != nil {
+	if h.Settings.FileLimit != 0 {
+		if err = h.Settings.Flimit(); err != nil {
 			return err
 		}
 	}
 
 	//  web server
-	if r.Server.Status {
-		r.Server.Parent = r
-		err = r.Server.Start()
+	if h.Server.Status {
+		h.Server.Parent = h
+		err = h.Server.Start()
 		if err != nil {
 			return err
 		}
-		err = r.Server.OpenURL()
+		err = h.Server.OpenURL()
 		if err != nil {
 			return err
 		}
 	}
 
 	// run workflow
-	return r.Run()
+	return h.Run()
 }

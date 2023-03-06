@@ -23,14 +23,14 @@ func init() {
 }
 
 func getProjectNames(input string) []string {
-	r := haunt.NewHaunt()
+	h := haunt.NewHaunt()
 	// read a config if exist
-	err := r.Settings.Read(&r)
+	err := h.Settings.Read(&h)
 	if err != nil {
 		return []string{}
 	}
 	names := []string{}
-	for _, project := range r.Projects {
+	for _, project := range h.Projects {
 		if strings.HasPrefix(project.Name, input) {
 			names = append(names, project.Name)
 		}
@@ -40,22 +40,22 @@ func getProjectNames(input string) []string {
 
 // Remove a project from an existing config
 func remove(cmd *cobra.Command, args []string) (err error) {
-	r := haunt.NewHaunt()
+	h := haunt.NewHaunt()
 	// read a config if exist
-	err = r.Settings.Read(&r)
+	err = h.Settings.Read(&h)
 	if err != nil {
 		return err
 	}
 	for _, arg := range args {
-		err = r.Remove(arg)
+		err = h.Remove(arg)
 		if err != nil {
-			log.Println(r.Prefix(haunt.Red.Bold(arg + " project not found")))
+			log.Println(h.Prefix(haunt.Red.Bold(arg + " project not found")))
 			continue
 		}
-		log.Println(r.Prefix(haunt.Green.Bold(arg + " successfully removed")))
+		log.Println(h.Prefix(haunt.Green.Bold(arg + " successfully removed")))
 	}
 	// update config
-	err = r.Settings.Write(r)
+	err = h.Settings.Write(h)
 	if err != nil {
 		return err
 	}

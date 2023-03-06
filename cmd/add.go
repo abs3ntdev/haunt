@@ -27,8 +27,8 @@ var addCmd = &cobra.Command{
 }
 
 func getPotentialProjets(in string) []string {
-	r := haunt.NewHaunt()
-	err := r.Settings.Read(&r)
+	h := haunt.NewHaunt()
+	err := h.Settings.Read(&h)
 	if err != nil {
 		return []string{}
 	}
@@ -39,7 +39,7 @@ func getPotentialProjets(in string) []string {
 	}
 	for _, dir := range cmdDir {
 		exists := false
-		for _, proj := range r.Projects {
+		for _, proj := range h.Projects {
 			if dir.Name() == proj.Name {
 				exists = true
 				continue
@@ -73,24 +73,24 @@ func init() {
 // Add a project to an existing config or create a new one
 func add(cmd *cobra.Command, args []string) (err error) {
 	addConfig.Name = args[0]
-	r := haunt.NewHaunt()
+	h := haunt.NewHaunt()
 	// read a config if exist
-	err = r.Settings.Read(&r)
+	err = h.Settings.Read(&h)
 	if err != nil {
 		return err
 	}
-	projects := len(r.Projects)
+	projects := len(h.Projects)
 	// create and add a new project
-	r.Add(r.New(addConfig))
-	if len(r.Projects) > projects {
+	h.Add(h.New(addConfig))
+	if len(h.Projects) > projects {
 		// update config
-		err = r.Settings.Write(r)
+		err = h.Settings.Write(h)
 		if err != nil {
 			return err
 		}
-		log.Println(r.Prefix(haunt.Green.Bold("project successfully added")))
+		log.Println(h.Prefix(haunt.Green.Bold("project successfully added")))
 	} else {
-		log.Println(r.Prefix(haunt.Green.Bold("project can't be added")))
+		log.Println(h.Prefix(haunt.Green.Bold("project can't be added")))
 	}
 	return nil
 }

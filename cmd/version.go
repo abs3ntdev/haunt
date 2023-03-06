@@ -38,6 +38,6 @@ func init() {
 
 // Version print current version
 func version(cmd *cobra.Command, args []string) {
-	r := haunt.NewHaunt()
-	log.Println(r.Prefix(haunt.Green.Bold(Version)))
+	h := haunt.NewHaunt()
+	log.Println(h.Prefix(haunt.Green.Bold(Version)))
 }

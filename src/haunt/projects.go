@@ -637,13 +637,13 @@ func (p *Project) run(path string, stream chan Response, stop <-chan bool) (err 
 	}
 	if _, err = os.Stat(path); err == nil {
 		build = exec.Command(path, args...)
-	} else if _, err = os.Stat(path + RExtWin); err == nil {
-		build = exec.Command(path+RExtWin, args...)
+	} else if _, err = os.Stat(path + HExtWin); err == nil {
+		build = exec.Command(path+HExtWin, args...)
 	} else {
 		if _, err = os.Stat(path); err == nil {
 			build = exec.Command(path, args...)
-		} else if _, err = os.Stat(path + RExtWin); err == nil {
-			build = exec.Command(path+RExtWin, args...)
+		} else if _, err = os.Stat(path + HExtWin); err == nil {
+			build = exec.Command(path+HExtWin, args...)
 		} else {
 			return errors.New("project not found")
 		}

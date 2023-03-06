@@ -13,9 +13,9 @@ import (
 const (
 	Permission = 0o775
 	File       = ".haunt.yaml"
-	FileOut    = ".r.outputs.log"
-	FileErr    = ".r.errors.log"
-	FileLog    = ".r.logs.log"
+	FileOut    = ".h.outputs.log"
+	FileErr    = ".h.errors.log"
+	FileLog    = ".h.logs.log"
 )
 
 // Settings defines a group of general settings and options
@@ -71,10 +71,10 @@ func (s *Settings) Remove(d string) error {
 // Read config file
 func (s *Settings) Read(out interface{}) error {
 	// backward compatibility
-	if _, err := os.Stat(RFile); err != nil {
+	if _, err := os.Stat(HFile); err != nil {
 		return err
 	}
-	content, err := s.Stream(RFile)
+	content, err := s.Stream(HFile)
 	if err == nil {
 		err = yaml.Unmarshal(content, out)
 		return err
@@ -88,7 +88,7 @@ func (s *Settings) Write(out interface{}) error {
 	if err != nil {
 		return err
 	}
-	s.Fatal(os.WriteFile(RFile, y, Permission))
+	s.Fatal(os.WriteFile(HFile, y, Permission))
 	return nil
 }
 
