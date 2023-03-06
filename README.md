@@ -13,56 +13,42 @@ make build && sudo make install
 
 ## Commands List
 
-### Run Command
-From **project/projects** root execute:
-
-
-```
-haunt init
-```
-
-then
-
-```
-haunt start
-```
-
-haunt init will add your root directory if it contains a main.go file and will add any directory inside of cmd as projects. If you wish to add additional projects run haunt add [name] or edit the config file manually. By default projects are set to run go install and go run [project]
-
-***start*** command supports the following custom parameters:
-
-    --name="name"               -> Run by name on existing configuration
-    --path="haunt/server"     -> Custom Path (if not specified takes the working directory name)
-    --generate                  -> Enable go generate
-    --fmt                       -> Enable go fmt
-    --test                      -> Enable go test
-    --vet                       -> Enable go vet
-    --install                   -> Enable go install
-    --build                     -> Enable go build
-    --run                       -> Enable go run
-    --server                    -> Enable the web server
-    --open                      -> Open web ui in default browser
-    --no-config                 -> Ignore an existing config / skip the creation of a new one
-
-Some examples:
-
-    haunt start
-    haunt start --path="mypath"
-    haunt start --name="haunt" --build
-    haunt start --path="haunt" --run --no-config
-    haunt start --install --test --fmt --no-config
-    haunt start --path="/Users/username/go/src/github.com/oxequa/haunt-examples/coin/"
-
 ### Init Command
 This command will generate a .haunt.yaml with sane default for your current project/projects.\
 If there is a main.go in the root directory it will be added along with any directories inside the relative path `cmd`
 
     haunt init
 
-### Add Command
-Add a project to an existing config file or create a new one.
 
-    haunt add [name]
+### Run Command
+
+```
+haunt run
+```
+
+the run command allows for specifying projects by name, all provided will be ran according to the config file:
+
+Some examples:
+
+    haunt run
+    haunt run server api
+
+### Add Command
+Add a project, the same defaults init uses will be used for new projects unless flags are provided.
+
+    haunt add [name] [--flags]
+
+Possible flags are:
+   
+    -b, --build         Enable go build
+    -f, --fmt           Enable go fmt
+    -g, --generate      Enable go generate
+    -h, --help          help for add
+    -i, --install       Enable go install (default true)
+    -p, --path string   Project base path (default "./")
+    -r, --run           Enable go run (default true)
+    -t, --test          Enable go test
+    -v, --vet           Enable go vet
 
 ### Remove Command
 Remove a project by its name
@@ -117,7 +103,8 @@ Remove a project by its name
       - --myarg
       watcher:
           paths:                 // watched paths are relative to directory you run haunt in
-          - /
+          - src
+          - cmd/coin
           ignore_paths:          // ignored paths
           - vendor
           extensions:                  // watched extensions
@@ -138,4 +125,3 @@ Remove a project by its name
             command: echo after global
             global: true
             output: true
-          errorOutputPattern: mypattern   //custom error pattern
