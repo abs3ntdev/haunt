@@ -30,6 +30,7 @@ _testmain.go
 .idea
 .DS_Store
 /haunt/
+/haunt
 
 docker
 vendor
