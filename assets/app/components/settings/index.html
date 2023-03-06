@@ -1,0 +1,141 @@
+<div layout="row" flex="100" layout-wrap="layout-wrap" id="projects"><md-whiteframe class="md-whiteframe-2dp box scroll"
+    flex="100" layout="row" layout-align="start start" layout-wrap="layout-wrap"><md-toolbar class="bar bgg" flex="100"
+      layout="row" layout-align="space-between center">
+      <div class="left" flex="flex"><md-button class="md-icon-button hov no-margin"
+          ui-sref="app.project({name: current.name})"><md-icon
+            md-svg-src="/assets/img/svg/backspace.svg"></md-icon></md-button></div>
+      <div class="right" flex="flex" layout-padding="layout-padding">{{current.name || '-'}}</div>
+    </md-toolbar><md-list-item layout="row" flex="100" layout-wrap="layout-wrap">
+      <div flex="100" layout="row" layout-padding="layout-padding" layout-align="center center">
+        <div class="field" flex="50">working path</div>
+        <div class="value text" flex="50">{{current.path || '-'}}</div>
+      </div>
+    </md-list-item><md-list-item layout="row" flex="100" layout-wrap="layout-wrap">
+      <div flex="100" layout="row" layout-padding="layout-padding" layout-align="center center">
+        <div class="field" flex="50">params</div>
+        <div class="value text" flex="50"><span ng-if="!current.args">-</span><span
+            ng-repeat="param in current.args">{{param}}{{$last ? '' : ', '}}</span></div>
+      </div>
+    </md-list-item><md-list-item layout="row" flex="100" layout-wrap="layout-wrap">
+      <div flex="100" layout="row" layout-padding="layout-padding" layout-align="center center">
+        <div class="field" flex="50">Environment</div>
+        <div class="value text" flex="50"><span ng-if="!current.environment">-</span><span
+            ng-repeat="env in current.environment">{{env}}{{$last ? '' : ', '}}</span></div>
+      </div>
+    </md-list-item><!--section--><md-list-item class="paragraph" layout="row" flex="100" layout-wrap="layout-wrap">
+      <div class="field title" flex="100" layout-padding="layout-padding">Settings</div>
+    </md-list-item><md-list-item layout="row" flex="100" layout-wrap="layout-wrap">
+      <div class="field" flex="50">go run</div>
+      <div class="value" flex="50" ng-class="{ 'enabled': current.commands.run, 'disabled': !current.commands.run }"
+        layout="row" layout-align="space-between center">
+        <div>{{current.commands.run ? 'Enabled' : 'Disabled' }}</div>
+        <div><md-switch class="md-warn md-hue-2" ng-change="sync()" ng-model="current.commands.run"
+            aria-label="switch"></md-switch></div>
+      </div>
+    </md-list-item><md-list-item layout="row" flex="100" layout-wrap="layout-wrap">
+      <div class="field" flex="50">go build</div>
+      <div class="value" flex="50"
+        ng-class="{ 'enabled': current.commands.build.status, 'disabled': !current.commands.build.status }" layout="row"
+        layout-align="space-between center">
+        <div>{{current.commands.build.status ? 'Enabled' : 'Disabled' }}</div>
+        <div><md-switch class="md-warn md-hue-2" ng-change="sync()" ng-model="current.commands.build.status"
+            aria-label="switch"></md-switch></div>
+      </div>
+    </md-list-item><md-list-item layout="row" flex="100" layout-wrap="layout-wrap">
+      <div class="field" flex="50">go install</div>
+      <div class="value" flex="50"
+        ng-class="{ 'enabled': current.commands.install.status, 'disabled': !current.commands.install.status }"
+        layout="row" layout-align="space-between center">
+        <div>{{current.commands.install.status ? 'Enabled' : 'Disabled' }}</div>
+        <div><md-switch class="md-warn md-hue-2" ng-change="sync()" ng-model="current.commands.install.status"
+            aria-label="switch"></md-switch></div>
+      </div>
+    </md-list-item><md-list-item layout="row" flex="100" layout-wrap="layout-wrap">
+      <div class="field" flex="50">go fmt</div>
+      <div class="value" flex="50"
+        ng-class="{ 'enabled': current.commands.fmt.status, 'disabled': !current.commands.fmt.status }" layout="row"
+        layout-align="space-between center">
+        <div>{{current.commands.fmt.status ? 'Enabled' : 'Disabled' }}</div>
+        <div><md-switch class="md-warn md-hue-2" ng-change="sync()" ng-model="current.commands.fmt.status"
+            aria-label="switch"></md-switch></div>
+      </div>
+    </md-list-item><md-list-item layout="row" flex="100" layout-wrap="layout-wrap">
+      <div class="field" flex="50">go vet</div>
+      <div class="value" flex="50"
+        ng-class="{ 'enabled': current.commands.vet.status, 'disabled': !current.commands.vet.status }" layout="row"
+        layout-align="space-between center">
+        <div>{{current.commands.vet.status ? 'Enabled' : 'Disabled' }}</div>
+        <div><md-switch class="md-warn md-hue-2" ng-change="sync()" ng-model="current.commands.vet.status"
+            aria-label="switch"></md-switch></div>
+      </div>
+    </md-list-item><md-list-item layout="row" flex="100" layout-wrap="layout-wrap">
+      <div class="field" flex="50">go test</div>
+      <div class="value" flex="50"
+        ng-class="{ 'enabled': current.commands.test.status, 'disabled': !current.commands.test.status }" layout="row"
+        layout-align="space-between center">
+        <div>{{current.commands.test.status ? 'Enabled' : 'Disabled' }}</div>
+        <div><md-switch class="md-warn md-hue-2" ng-change="sync()" ng-model="current.commands.test.status"
+            aria-label="switch"></md-switch></div>
+      </div>
+    </md-list-item><md-list-item layout="row" flex="100" layout-wrap="layout-wrap">
+      <div class="field" flex="50">go generate</div>
+      <div class="value" flex="50"
+        ng-class="{ 'enabled': current.commands.generate.status, 'disabled': !current.commands.generate.status }"
+        layout="row" layout-align="space-between center">
+        <div>{{current.commands.generate.status ? 'Enabled' : 'Disabled' }}</div>
+        <div><md-switch class="md-warn md-hue-2" ng-change="sync()" ng-model="current.commands.generate.status"
+            aria-label="switch"></md-switch></div>
+      </div>
+    </md-list-item><md-list-item layout="row" flex="100" layout-wrap="layout-wrap">
+      <div class="field" flex="50">go fix</div>
+      <div class="value" flex="50"
+        ng-class="{ 'enabled': current.commands.fix.status, 'disabled': !current.commands.fix.status }" layout="row"
+        layout-align="space-between center">
+        <div>{{current.commands.fix.status ? 'Enabled' : 'Disabled' }}</div>
+        <div><md-switch class="md-warn md-hue-2" ng-change="sync()" ng-model="current.commands.fix.status"
+            aria-label="switch"></md-switch></div>
+      </div>
+    </md-list-item><md-list-item layout="row" flex="100" layout-wrap="layout-wrap">
+      <div class="field" flex="50">go clean</div>
+      <div class="value" flex="50"
+        ng-class="{ 'enabled': current.commands.clean.status, 'disabled': !current.commands.clean.status }" layout="row"
+        layout-align="space-between center">
+        <div>{{current.commands.clean.status ? 'Enabled' : 'Disabled' }}</div>
+        <div><md-switch class="md-warn md-hue-2" ng-change="sync()" ng-model="current.commands.clean.status"
+            aria-label="switch"></md-switch></div>
+      </div>
+    </md-list-item><!--section--><md-list-item class="paragraph" layout="row" flex="100" layout-wrap="layout-wrap">
+      <div class="field title" flex="100" layout-padding="layout-padding">watcher</div>
+    </md-list-item><md-list-item layout="row" flex="100" layout-wrap="layout-wrap">
+      <div flex="100" layout="row" layout-padding="layout-padding">
+        <div class="field" flex="50">Folders to watch</div>
+        <div class="value text" flex="50"><span ng-repeat="path in current.watcher.paths">{{path}}{{$last ? '' : ',
+            '}}</span></div>
+      </div>
+    </md-list-item><md-list-item layout="row" flex="100" layout-wrap="layout-wrap">
+      <div flex="100" layout="row" layout-padding="layout-padding">
+        <div class="field" flex="50">file extensions to watch</div>
+        <div class="value text" flex="50"><span ng-repeat="ext in current.watcher.extensions">{{ext}}{{$last ? '' : ',
+            '}}</span></div>
+      </div>
+    </md-list-item><md-list-item layout="row" flex="100" layout-wrap="layout-wrap">
+      <div flex="100" layout="row" layout-padding="layout-padding">
+        <div class="field" flex="50">ignored folders</div>
+        <div class="value text" flex="50"><span ng-repeat="dir in current.watcher.ignored_paths">{{dir}}{{$last ? '' :
+            ', '}}</span></div>
+      </div>
+    </md-list-item><md-list-item layout="row" flex="100" layout-wrap="layout-wrap">
+      <div flex="100" layout="row" layout-padding="layout-padding">
+        <div class="field" flex="50">After/Before commands</div>
+        <div class="value text" flex="50"><span>{{current.watcher.scripts.length || '-'}}</span></div>
+      </div>
+    </md-list-item><md-list-item layout="row" flex="100" layout-wrap="layout-wrap">
+      <div class="field" flex="50">file preview</div>
+      <div class="value" flex="50"
+        ng-class="{ 'enabled': current.watcher.preview, 'disabled': !current.watcher.preview }" layout="row"
+        layout-align="space-between center">
+        <div>{{current.watcher.preview ? 'Enabled' : 'Disabled' }}</div>
+        <div><md-switch class="md-warn md-hue-2" ng-change="sync()" ng-model="current.watcher.preview"
+            aria-label="switch"></md-switch></div>
+      </div>
+    </md-list-item></md-whiteframe></div>
