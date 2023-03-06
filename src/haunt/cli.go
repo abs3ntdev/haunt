@@ -93,9 +93,6 @@ func (r *Haunt) SetDefaults() {
 				Install: Tool{
 					Status: true,
 				},
-				Build: Tool{
-					Status: true,
-				},
 				Run: Tool{
 					Status: true,
 				},

@@ -31,7 +31,7 @@ func init() {
 	startCmd.Flags().BoolVarP(&startConfig.Server, "server", "s", false, "Start server")
 	startCmd.Flags().BoolVarP(&startConfig.Open, "open", "o", false, "Open into the default browser")
 	startCmd.Flags().BoolVarP(&startConfig.Install, "install", "i", true, "Enable go install")
-	startCmd.Flags().BoolVarP(&startConfig.Build, "build", "b", true, "Enable go build")
+	startCmd.Flags().BoolVarP(&startConfig.Build, "build", "b", false, "Enable go build")
 	startCmd.Flags().BoolVarP(&startConfig.Run, "run", "r", true, "Enable go run")
 	startCmd.Flags().BoolVarP(&startConfig.Legacy, "legacy", "l", false, "Legacy watch by polling instead fsnotify")
 	startCmd.Flags().BoolVarP(&startConfig.NoConfig, "no-config", "c", false, "Ignore existing config and doesn't create a new one")
