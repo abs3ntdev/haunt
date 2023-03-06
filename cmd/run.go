@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/abs3ntdev/haunt/src/haunt"
@@ -45,7 +47,19 @@ func run(cmd *cobra.Command, args []string) (err error) {
 	// read a config if exist
 	err = h.Settings.Read(&h)
 	if err != nil {
-		return err
+		if os.IsNotExist(err) {
+			log.Println(h.Prefix("No config file found, initializing one for you"))
+			err = defaultConfig(cmd, args)
+			if err != nil {
+				log.Println(h.Prefix("Failed to generate default config: " + err.Error()))
+			}
+			err = h.Settings.Read(&h)
+			if err != nil {
+				return fmt.Errorf(h.Prefix("Failed to read config file: " + err.Error()))
+			}
+		} else {
+			return err
+		}
 	}
 	if len(args) >= 1 {
 		// filter by name flag if exist
