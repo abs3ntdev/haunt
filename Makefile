@@ -5,6 +5,12 @@ ${pkgname}: $(shell find . -name '*.go')
 	mkdir -p bin
 	go build -o bin/${pkgname} .
 
+decode:
+	go run hack/unpack/main.go
+
+pack-site:
+	go-bindata -pkg haunt -o src/haunt/bindata.go -fs assets/...
+
 completions:
 	mkdir -p completions
 	./bin/${pkgname} completion zsh > completions/_${pkgname}
@@ -18,8 +24,9 @@ tidy:
 	go mod tidy
 
 clean:
-	rm -f bin
+	rm -rf bin
 	rm -rf completions
+	rm -rf assets
 
 uninstall:
 	rm -f /usr/bin/${pkgname}

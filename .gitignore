@@ -25,6 +25,7 @@ _testmain.go
 *.exe
 *.test
 *.prof
+/assets/
 
 .glide
 .idea
