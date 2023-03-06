@@ -81,9 +81,9 @@ func (r *Haunt) SetDefaults() {
 	r.Settings.FileLimit = 0
 	r.Settings.Legacy.Interval = 100 * time.Millisecond
 	r.Settings.Legacy.Force = false
-	r.Settings.Files.Errors = Resource{Name: FileErr, Status: false}
-	r.Settings.Files.Errors = Resource{Name: FileOut, Status: false}
-	r.Settings.Files.Errors = Resource{Name: FileLog, Status: false}
+	r.Settings.Errors = Resource{Name: FileErr, Status: false}
+	r.Settings.Errors = Resource{Name: FileOut, Status: false}
+	r.Settings.Errors = Resource{Name: FileLog, Status: false}
 	if _, err := os.Stat("main.go"); err == nil {
 		log.Println(r.Prefix(Green.Bold("Adding: " + filepath.Base(Wdir()))))
 		r.Projects = append(r.Projects, Project{
@@ -137,7 +137,7 @@ func (r *Haunt) SetDefaults() {
 
 // Stop haunt workflow
 func (r *Haunt) Stop() error {
-	for k := range r.Schema.Projects {
+	for k := range r.Projects {
 		if r.Schema.Projects[k].exit != nil {
 			close(r.Schema.Projects[k].exit)
 		}

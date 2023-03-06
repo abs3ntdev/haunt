@@ -591,7 +591,7 @@ func (p *Project) run(path string, stream chan Response, stop <-chan bool) (err 
 		// https://github.com/golang/go/issues/5615
 		// https://github.com/golang/go/issues/6720
 		if build != nil {
-			err := build.Process.Signal(os.Interrupt)
+			err = build.Process.Signal(os.Interrupt)
 			if err != nil {
 				log.Println(p.parent.Prefix("Failed to send interrupt: " + err.Error()))
 			}
@@ -635,9 +635,9 @@ func (p *Project) run(path string, stream chan Response, stop <-chan bool) (err 
 	if p.Tools.Run.Method != "" {
 		path = p.Tools.Run.Method
 	}
-	if _, err := os.Stat(path); err == nil {
+	if _, err = os.Stat(path); err == nil {
 		build = exec.Command(path, args...)
-	} else if _, err := os.Stat(path + RExtWin); err == nil {
+	} else if _, err = os.Stat(path + RExtWin); err == nil {
 		build = exec.Command(path+RExtWin, args...)
 	} else {
 		if _, err = os.Stat(path); err == nil {

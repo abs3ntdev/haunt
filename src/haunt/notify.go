@@ -250,13 +250,13 @@ func (w *filePoller) watch(f *os.File, lastFi os.FileInfo, chClose chan struct{}
 			// If it doesn't exist at this point, it must have been removed
 			// no need to send the error here since this is a valid operation
 			if os.IsNotExist(err) {
-				if err := w.sendEvent(fsnotify.Event{Op: fsnotify.Remove, Name: f.Name()}, chClose); err != nil {
+				if err = w.sendEvent(fsnotify.Event{Op: fsnotify.Remove, Name: f.Name()}, chClose); err != nil {
 					return
 				}
 				lastFi = nil
 			}
 			// at this point, send the error
-			err := w.sendErr(err, chClose)
+			err = w.sendErr(err, chClose)
 			if err != nil {
 				log.Println(log.Prefix(), err.Error())
 			}

@@ -47,7 +47,7 @@ func remove(cmd *cobra.Command, args []string) (err error) {
 		return err
 	}
 	for _, arg := range args {
-		err := r.Remove(arg)
+		err = r.Remove(arg)
 		if err != nil {
 			log.Println(r.Prefix(haunt.Red.Bold(arg + " project not found")))
 			continue
