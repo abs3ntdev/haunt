@@ -185,7 +185,6 @@ func (t *Tool) Compile(path string, stop <-chan bool) (response Response) {
 	done := make(chan error)
 	args := append(t.cmd, t.Args...)
 	cmd := exec.Command(args[0], args[1:]...)
-	fmt.Println(cmd)
 	if t.Dir != "" {
 		cmd.Dir, _ = filepath.Abs(t.Dir)
 	} else {
