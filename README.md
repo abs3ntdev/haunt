@@ -1,4 +1,5 @@
 ## Quickstart
+### Install
 ```
 go install github.com/abs3ntdev/haunt@latest
 ```
@@ -10,6 +11,14 @@ git clone https://github.com/abs3ntdev/haunt
 cd haunt
 make build && sudo make install
 ```
+
+### Completions
+completions will be automatically installed if you used the Makefile, if you did not you can generate completions with `haunt completion [bash/fish/powershell/zsh]`
+
+for example: `haunt completion zsh > _haunt`
+
+you can also source the output of the completion command directly in your .zshrc with:\
+      `source <(haunt completion zsh) && compdef _haunt haunt`
 
 ## Commands List
 
