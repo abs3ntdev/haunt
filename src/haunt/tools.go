@@ -183,12 +183,7 @@ func (t *Tool) Compile(path string, stop <-chan bool) (response Response) {
 	var out bytes.Buffer
 	var stderr bytes.Buffer
 	done := make(chan error)
-	buildPath, _ := filepath.Abs(Wdir())
-	buildPath = "-o " + buildPath
-	buildPath += "/bin"
-	fmt.Println(t.cmd, t.Args)
-	args := append(t.cmd, buildPath)
-	args = append(args, t.Args...)
+	args := append(t.cmd, t.Args...)
 	cmd := exec.Command(args[0], args[1:]...)
 	fmt.Println(cmd)
 	if t.Dir != "" {
