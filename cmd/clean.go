@@ -24,6 +24,6 @@ func clean(cmd *cobra.Command, args []string) (err error) {
 	if err := r.Settings.Remove(haunt.RFile); err != nil {
 		return err
 	}
-	log.Println(r.Prefix(haunt.Green.Bold("folder successfully removed")))
+	log.Println(r.Prefix(haunt.Green.Bold("config file removed successfully removed")))
 	return nil
 }

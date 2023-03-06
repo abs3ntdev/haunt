@@ -120,9 +120,6 @@ func (r *Haunt) SetDefaults() {
 					Install: Tool{
 						Status: true,
 					},
-					Build: Tool{
-						Status: true,
-					},
 					Run: Tool{
 						Status: true,
 					},
@@ -148,8 +145,8 @@ func (r *Haunt) Stop() error {
 	return nil
 }
 
-// Start haunt workflow
-func (r *Haunt) Start() error {
+// Run haunt workflow
+func (r *Haunt) Run() error {
 	if len(r.Projects) > 0 {
 		var wg sync.WaitGroup
 		wg.Add(len(r.Projects))
