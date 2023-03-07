@@ -6,7 +6,7 @@ ${pkgname}: $(shell find . -name '*.go')
 	go build -o bin/${pkgname} .
 
 decode:
-	go run hack/unpack/main.go
+	go run ./hack/unpack/main.go
 
 pack-site:
 	go-bindata -pkg haunt -o src/haunt/bindata.go -fs assets/...
