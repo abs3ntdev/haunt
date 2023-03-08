@@ -13,6 +13,7 @@ make build && sudo make install
 ```
 
 #### aur
+
 ```
 yay -S haunt-go-git
 ```
