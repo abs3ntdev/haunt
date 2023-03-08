@@ -12,6 +12,11 @@ cd haunt
 make build && sudo make install
 ```
 
+#### aur
+```
+yay -S haunt-go-git
+```
+
 ### Completions
 completions will be automatically installed if you used the Makefile, if you did not you can generate completions with `haunt completion [bash/fish/powershell/zsh]`
 
