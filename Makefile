@@ -29,13 +29,13 @@ clean:
 	rm -rf assets
 
 uninstall:
-	rm -f /usr/bin/${pkgname}
+	rm -f /usr/local/bin/${pkgname}
 	rm -f /usr/share/zsh/site-functions/_${pkgname}
 	rm -f /usr/share/bash-completion/completions/${pkgname}
 	rm -f /usr/share/fish/vendor_completions.d/${pkgname}.fish
 
 install:
-	cp bin/${pkgname} /usr/bin
+	cp bin/${pkgname} /usr/local/bin
 	bin/${pkgname} completion zsh > /usr/share/zsh/site-functions/_${pkgname}
 	bin/${pkgname} completion bash > /usr/share/bash-completion/completions/${pkgname}
 	bin/${pkgname} completion fish > /usr/share/fish/vendor_completions.d/${pkgname}.fish

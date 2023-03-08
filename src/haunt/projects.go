@@ -41,11 +41,12 @@ type Ignore struct {
 
 // Command fields
 type Command struct {
-	Cmd    string `yaml:"command" json:"command"`
-	Type   string `yaml:"type" json:"type"`
-	Path   string `yaml:"path,omitempty" json:"path,omitempty"`
-	Global bool   `yaml:"global,omitempty" json:"global,omitempty"`
-	Output bool   `yaml:"output,omitempty" json:"output,omitempty"`
+	Cmd    string            `yaml:"command" json:"command"`
+	Type   string            `yaml:"type" json:"type"`
+	Env    map[string]string `yaml:"env,omitempty" json:"env,omitempty"`
+	Path   string            `yaml:"path,omitempty" json:"path,omitempty"`
+	Global bool              `yaml:"global,omitempty" json:"global,omitempty"`
+	Output bool              `yaml:"output,omitempty" json:"output,omitempty"`
 }
 
 // Project info
@@ -542,7 +543,7 @@ func (p *Project) stamp(t string, o BufferOut, msg string, stream string) {
 	case "out":
 		p.Buffer.StdOut = append(p.Buffer.StdOut, o)
 		if p.parent.Settings.Files.Outputs.Status {
-			f := p.parent.Settings.Create(p.Path, p.parent.Settings.Files.Outputs.Name)
+			f := p.parent.Settings.Create(p.Path, p.parent.Settings.Outputs.Name)
 			if _, err := f.WriteString(strings.Join(content, " ")); err != nil {
 				p.parent.Settings.Fatal(err, "")
 			}
@@ -550,7 +551,7 @@ func (p *Project) stamp(t string, o BufferOut, msg string, stream string) {
 	case "log":
 		p.Buffer.StdLog = append(p.Buffer.StdLog, o)
 		if p.parent.Settings.Files.Logs.Status {
-			f := p.parent.Settings.Create(p.Path, p.parent.Settings.Files.Logs.Name)
+			f := p.parent.Settings.Create(p.Path, p.parent.Settings.Logs.Name)
 			if _, err := f.WriteString(strings.Join(content, " ")); err != nil {
 				p.parent.Settings.Fatal(err, "")
 			}
@@ -558,7 +559,7 @@ func (p *Project) stamp(t string, o BufferOut, msg string, stream string) {
 	case "error":
 		p.Buffer.StdErr = append(p.Buffer.StdErr, o)
 		if p.parent.Settings.Files.Errors.Status {
-			f := p.parent.Settings.Create(p.Path, p.parent.Settings.Files.Errors.Name)
+			f := p.parent.Settings.Create(p.Path, p.parent.Settings.Errors.Name)
 			if _, err := f.WriteString(strings.Join(content, " ")); err != nil {
 				p.parent.Settings.Fatal(err, "")
 			}
@@ -577,7 +578,14 @@ func (p *Project) stamp(t string, o BufferOut, msg string, stream string) {
 
 func (p Project) buildEnvs() (envs []string) {
 	for k, v := range p.Env {
-		envs = append(envs, fmt.Sprintf("%s=%s", strings.Replace(k, "=", "", -1), v))
+		envs = append(envs, fmt.Sprintf("%s=%s", strings.ReplaceAll(k, "=", ""), v))
+	}
+	return
+}
+
+func (c Command) buildEnvs() (envs []string) {
+	for k, v := range c.Env {
+		envs = append(envs, fmt.Sprintf("%s=%s", strings.ReplaceAll(k, "=", ""), v))
 	}
 	return
 }
@@ -715,6 +723,10 @@ func (c *Command) exec(base string, stop <-chan bool) (response Response) {
 	done := make(chan error)
 	args := strings.Split(strings.Replace(strings.Replace(c.Cmd, "'", "", -1), "\"", "", -1), " ")
 	ex := exec.Command(args[0], args[1:]...)
+	appendEnvs := c.buildEnvs()
+	if len(appendEnvs) > 0 {
+		ex.Env = append(ex.Env, appendEnvs...)
+	}
 	ex.Dir = base
 	// make cmd path
 	if c.Path != "" {
