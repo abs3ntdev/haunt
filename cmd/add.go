@@ -13,10 +13,11 @@ import (
 var addConfig config.Flags
 
 var addCmd = &cobra.Command{
-	Use:   "add",
-	Short: "Adds a project by name",
-	Long:  "Adds a project by name, if path is provided it will use 'cmd/name', all flags provided will be saved in the config file. By default go install and go run will be ran",
-	Args:  cobra.MatchAll(cobra.ExactArgs(1)),
+	Use:     "add",
+	Aliases: []string{"a", "create", "new"},
+	Short:   "Adds a project by name",
+	Long:    "Adds a project by name, if path is provided it will use 'cmd/name', all flags provided will be saved in the config file. By default go install and go run will be ran",
+	Args:    cobra.MatchAll(cobra.ExactArgs(1)),
 	ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		if len(args) >= 1 {
 			return nil, cobra.ShellCompDirectiveNoFileComp

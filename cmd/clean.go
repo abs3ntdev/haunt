@@ -9,9 +9,10 @@ import (
 
 // cleanCmd represents the clean command
 var cleanCmd = &cobra.Command{
-	Use:   "clean",
-	Short: "Deletes the haunt config file",
-	RunE:  clean,
+	Use:     "clean",
+	Aliases: []string{"c"},
+	Short:   "Deletes the haunt config file",
+	RunE:    clean,
 }
 
 func init() {

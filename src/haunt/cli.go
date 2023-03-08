@@ -145,8 +145,8 @@ func (h *Haunt) Stop() error {
 	return nil
 }
 
-// Run haunt workflow
-func (h *Haunt) Run() error {
+// Start haunt workflow
+func (h *Haunt) Start() error {
 	if len(h.Projects) > 0 {
 		var wg sync.WaitGroup
 		wg.Add(len(h.Projects))

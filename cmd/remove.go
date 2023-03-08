@@ -9,9 +9,10 @@ import (
 )
 
 var removeCmd = &cobra.Command{
-	Use:   "remove [names]",
-	Short: "Removes all projects by name from config file",
-	Args:  cobra.MatchAll(cobra.MinimumNArgs(1), cobra.OnlyValidArgs),
+	Use:     "remove [names]",
+	Aliases: []string{"delete", "r"},
+	Short:   "Removes all projects by name from config file",
+	Args:    cobra.MatchAll(cobra.MinimumNArgs(1), cobra.OnlyValidArgs),
 	ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return getProjectNames(toComplete), cobra.ShellCompDirectiveNoFileComp
 	},

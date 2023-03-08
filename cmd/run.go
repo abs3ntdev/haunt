@@ -10,18 +10,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var runCmd = &cobra.Command{
-	Use:   "run",
-	Short: "run haunt, optionally provide the name of projects to only run those otherwise will run all configured projects",
-	Args:  cobra.MatchAll(cobra.OnlyValidArgs),
+var startCmd = &cobra.Command{
+	Use:     "start",
+	Aliases: []string{"s", "run"},
+	Short:   "run haunt, optionally provide the name of projects to only run those otherwise will run all configured projects",
+	Args:    cobra.MatchAll(cobra.OnlyValidArgs),
 	ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return getProjectNamesToRun(toComplete), cobra.ShellCompDirectiveNoFileComp
 	},
-	RunE: run,
+	RunE: start,
 }
 
 func init() {
-	rootCmd.AddCommand(runCmd)
+	rootCmd.AddCommand(startCmd)
 }
 
 func getProjectNamesToRun(input string) []string {
@@ -41,7 +42,7 @@ func getProjectNamesToRun(input string) []string {
 }
 
 // haunt workflow
-func run(cmd *cobra.Command, args []string) (err error) {
+func start(cmd *cobra.Command, args []string) (err error) {
 	h := haunt.NewHaunt()
 
 	// read a config if exist
@@ -89,6 +90,6 @@ func run(cmd *cobra.Command, args []string) (err error) {
 		}
 	}
 
-	// run workflow
-	return h.Run()
+	// start workflow
+	return h.Start()
 }

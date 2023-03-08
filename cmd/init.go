@@ -12,10 +12,11 @@ import (
 
 // initCmd represents the init command
 var initCmd = &cobra.Command{
-	Use:   "init",
-	Short: "Generates a haunt config file using sane defaults",
-	Long:  "Generates a haunt config file using sane defaults, haunt will look for a main.go file and any directories inside the relative path 'cmd' and add them all as projects",
-	RunE:  defaultConfig,
+	Use:     "init",
+	Aliases: []string{"i"},
+	Short:   "Generates a haunt config file using sane defaults",
+	Long:    "Generates a haunt config file using sane defaults, haunt will look for a main.go file and any directories inside the relative path 'cmd' and add them all as projects",
+	RunE:    defaultConfig,
 }
 
 func init() {
