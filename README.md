@@ -89,7 +89,7 @@ Remove a project by its name
     schema:
     - name: coin
       path: cmd/coin                // project path
-      env:            // env variables available at startup
+      env:            // env variables for run
             test: test
             myvar: value
       commands:               // go commands supported
@@ -130,12 +130,20 @@ Remove a project by its name
             command: echo before global
             global: true
             output: true
+            env:            // env variables per script
+              test: test
+              myvar: value
           - type: before
             command: echo before change
             output: true
+            env:            // env variables per script
+              test: othertest
+              myvar: othervalue
           - type: after
             command: echo after change
             output: true
+            env:            // env variables per script
+              key: 1
           - type: after
             command: echo after global
             global: true
