@@ -6,7 +6,7 @@ require (
 	github.com/fatih/color v1.17.0
 	github.com/fsnotify/fsnotify v1.6.0
 	github.com/labstack/echo v3.3.10+incompatible
-	github.com/sirupsen/logrus v1.9.0
+	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.6.1
 	golang.org/x/net v0.7.0
 	gopkg.in/yaml.v2 v2.4.0
