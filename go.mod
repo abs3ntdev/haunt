@@ -7,7 +7,7 @@ require (
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/sirupsen/logrus v1.9.3
-	github.com/spf13/cobra v1.6.1
+	github.com/spf13/cobra v1.8.1
 	golang.org/x/net v0.27.0
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
