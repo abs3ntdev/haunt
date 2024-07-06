@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/fatih/color v1.17.0
-	github.com/fsnotify/fsnotify v1.6.0
+	github.com/fsnotify/fsnotify v1.7.0
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.6.1
